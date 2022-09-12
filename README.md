@@ -1,2 +1,2 @@
 # yazi-ini
-a tiny ini parser
+a tiny c++ ini parser
