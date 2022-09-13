@@ -10,11 +10,6 @@ int main()
     const string & filename = "./main.ini";
     IniFile ini(filename);
 
-    // load a ini file
-    const string & filename2 = "./main.ini";
-    IniFile ini2;
-    ini2.load(filename2);
-
     // show the ini file
     ini.show();
 

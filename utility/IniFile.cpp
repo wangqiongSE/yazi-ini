@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <algorithm>
 #include "IniFile.h"
@@ -24,6 +25,10 @@ Value::Value(double value)
     *this = value;
 }
 
+Value::Value(const char * value) : m_value(value)
+{
+}
+
 Value::Value(const string & value) : m_value(value)
 {
 }
@@ -40,17 +45,23 @@ Value & Value::operator = (bool value)
 
 Value & Value::operator = (int value)
 {
-    ostringstream os;
-    os << value;
-    m_value = os.str();
+    stringstream ss;
+    ss << value;
+    m_value = ss.str();
     return *this;
 }
 
 Value & Value::operator = (double value)
 {
-    ostringstream os;
-    os << value;
-    m_value = os.str();
+    stringstream ss;
+    ss << value;
+    m_value = ss.str();
+    return *this;
+}
+
+Value & Value::operator = (const char * value)
+{
+    m_value = value;
     return *this;
 }
 
@@ -84,11 +95,6 @@ Value::operator string()
     return m_value;
 }
 
-Value::operator string() const
-{
-    return m_value;
-}
-
 IniFile::IniFile()
 {
 }
@@ -115,13 +121,12 @@ string IniFile::trim(string s)
 
 bool IniFile::load(const string &filename)
 {
-    m_inifile.clear();
+    m_sections.clear();
     m_filename = filename;
 
     string name;
     string line;
 
-    // open the ini file for reading
     ifstream fin(filename.c_str());
     if (fin.fail())
     {
@@ -135,29 +140,32 @@ bool IniFile::load(const string &filename)
         {
             continue;
         }
-        if (line[0] == '#') // it is a comment
+        if (line[0] == '#') // it's comment
         {
             continue;
         }
         if ('[' == line[0]) // it's section
         {
             int pos = line.find_first_of(']');
-            if (-1 != pos)
+            if (pos < 0)
             {
-                name = trim(line.substr(1, pos - 1));
-                m_inifile[name] = Section();
+                return false;
             }
+            name = trim(line.substr(1, pos - 1));
+            m_sections[name] = Section();
         }
         else // it's key = value
         {
             int pos = line.find_first_of('=');
-            if (pos > 0)
+            if (pos < 0)
             {
-                //add new key to the last section
-                string key = trim(line.substr(0, pos));
-                string value = trim(line.substr(pos + 1, line.size() - pos - 1));
-                m_inifile[name][key] = value;
+                return false;
             }
+            string key = trim(line.substr(0, pos));
+            key = trim(key);
+            string value = trim(line.substr(pos + 1, line.size() - pos - 1));
+            value = trim(value);
+            m_sections[name][key] = value;
         }
     }
     return true;
@@ -165,59 +173,50 @@ bool IniFile::load(const string &filename)
 
 void IniFile::save(const string &filename)
 {
-    //open the ini file for writing
     ofstream fout(filename.c_str());
     if (fout.fail())
     {
         printf("opening file failed: %s.\n", m_filename.c_str());
         return;
     }
-    std::map<string, Section>::iterator it;
-    for (it = m_inifile.begin(); it != m_inifile.end(); ++it)
-    {
-        // write section
-        fout << "[" << it->first << "]" << endl;
-        for (Section::iterator iter = it->second.begin(); iter != it->second.end(); ++iter)
-        {
-            // write key = value
-            fout << iter->first << " = " << (string)iter->second << endl;
-        }
-        fout << endl;
-    }
+    fout << str();
     fout.close();
+}
+
+string IniFile::str()
+{
+    stringstream ss;
+    for (auto it = m_sections.begin(); it != m_sections.end(); ++it)
+    {
+        ss << "[" << it->first << "]" << endl;
+        for (auto iter = it->second.begin(); iter != it->second.end(); ++iter)
+        {
+            ss << iter->first << " = " << (string)iter->second << endl;
+        }
+        ss << endl;
+    }
+    return ss.str();
 }
 
 void IniFile::show()
 {
-    std::map<string, Section>::iterator it;
-    for (it = m_inifile.begin(); it != m_inifile.end(); ++it)
-    {
-        // show section
-        cout << "[" << it->first << "]" << endl;
-        Section::iterator iter;
-        for (iter = it->second.begin(); iter != it->second.end(); ++iter)
-        {
-            // show key = value
-            cout << iter->first << " = " << (string)iter->second << endl;
-        }
-        cout << endl;
-    }
+    std::cout << str();
 }
 
 void IniFile::clear()
 {
-    m_inifile.clear();
+    m_sections.clear();
 }
 
 bool IniFile::has(const string &section)
 {
-    return (m_inifile.find(section) != m_inifile.end());
+    return (m_sections.find(section) != m_sections.end());
 }
 
 bool IniFile::has(const string &section, const string& key)
 {
-    std::map<string, Section>::iterator it = m_inifile.find(section);
-    if (it != m_inifile.end())
+    std::map<string, Section>::iterator it = m_sections.find(section);
+    if (it != m_sections.end())
     {
         return (it->second.find(key) != it->second.end());
     }
@@ -226,44 +225,25 @@ bool IniFile::has(const string &section, const string& key)
 
 Value & IniFile::get(const string &section, const string &key)
 {
-    return m_inifile[section][key];
+    return m_sections[section][key];
 }
 
-void IniFile::set(const string &section, const string &key, bool value)
+void IniFile::set(const string &section, const string &key, const Value & value)
 {
-    m_inifile[section][key] = value;
-}
-
-void IniFile::set(const string &section, const string &key, int value)
-{
-    m_inifile[section][key] = value;
-}
-
-void IniFile::set(const string &section, const string &key, double value)
-{
-    m_inifile[section][key] = value;
-}
-
-void IniFile::set(const string &section, const string &key, const string &value)
-{
-    m_inifile[section][key] = value;
+    m_sections[section][key] = value;
 }
 
 void IniFile::remove(const string &section)
 {
-    auto it = m_inifile.find(section);
-    if (it != m_inifile.end())
-        m_inifile.erase(it);
+    m_sections.erase(section);
 }
 
 void IniFile::remove(const string &section, const string &key)
 {
-    std::map<string, Section>::iterator it = m_inifile.find(section);
-    if (it != m_inifile.end())
+    std::map<string, Section>::iterator it = m_sections.find(section);
+    if (it != m_sections.end())
     {
-        Section::iterator iter = it->second.find(key);
-        if (iter != it->second.end())
-            it->second.erase(iter);
+        it->second.erase(key);
     }
 }
 
