@@ -40,22 +40,22 @@ class IniFile
 {
 public:
     IniFile();
-    IniFile(const string &filename);
+    IniFile(const string & filename);
     ~IniFile();
 
-    bool load(const string &filename);
-    void save(const string &filename);
+    bool load(const string & filename);
+    void save(const string & filename);
     void show();
     void clear();
 
-    Value & get(const string &section, const string &key);
-    void set(const string &section, const string &key, const Value & value);
+    Value & get(const string & section, const string & key);
+    void set(const string & section, const string & key, const Value & value);
 
-    bool has(const string &section);
-    bool has(const string &section, const string &key);
+    bool has(const string & section);
+    bool has(const string & section, const string & key);
 
-    void remove(const string &section);
-    void remove(const string &section, const string &key);
+    void remove(const string & section);
+    void remove(const string & section, const string & key);
 
     Section & operator [] (const string & section)
     {

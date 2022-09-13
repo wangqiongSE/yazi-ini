@@ -99,7 +99,7 @@ IniFile::IniFile()
 {
 }
 
-IniFile::IniFile(const string &filename)
+IniFile::IniFile(const string & filename)
 {
     load(filename);
 }
@@ -119,7 +119,7 @@ string IniFile::trim(string s)
     return s;
 }
 
-bool IniFile::load(const string &filename)
+bool IniFile::load(const string & filename)
 {
     m_sections.clear();
     m_filename = filename;
@@ -171,7 +171,7 @@ bool IniFile::load(const string &filename)
     return true;
 }
 
-void IniFile::save(const string &filename)
+void IniFile::save(const string & filename)
 {
     ofstream fout(filename.c_str());
     if (fout.fail())
@@ -208,14 +208,14 @@ void IniFile::clear()
     m_sections.clear();
 }
 
-bool IniFile::has(const string &section)
+bool IniFile::has(const string & section)
 {
     return (m_sections.find(section) != m_sections.end());
 }
 
-bool IniFile::has(const string &section, const string& key)
+bool IniFile::has(const string & section, const string & key)
 {
-    std::map<string, Section>::iterator it = m_sections.find(section);
+    auto it = m_sections.find(section);
     if (it != m_sections.end())
     {
         return (it->second.find(key) != it->second.end());
@@ -223,24 +223,24 @@ bool IniFile::has(const string &section, const string& key)
     return false;
 }
 
-Value & IniFile::get(const string &section, const string &key)
+Value & IniFile::get(const string & section, const string & key)
 {
     return m_sections[section][key];
 }
 
-void IniFile::set(const string &section, const string &key, const Value & value)
+void IniFile::set(const string & section, const string & key, const Value & value)
 {
     m_sections[section][key] = value;
 }
 
-void IniFile::remove(const string &section)
+void IniFile::remove(const string & section)
 {
     m_sections.erase(section);
 }
 
-void IniFile::remove(const string &section, const string &key)
+void IniFile::remove(const string & section, const string & key)
 {
-    std::map<string, Section>::iterator it = m_sections.find(section);
+    auto it = m_sections.find(section);
     if (it != m_sections.end())
     {
         it->second.erase(key);
