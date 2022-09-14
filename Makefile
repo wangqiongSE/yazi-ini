@@ -10,15 +10,13 @@ OBJS := $(patsubst %.cpp, %.o, $(filter %.cpp, $(SRCS)))
 $(warning OBJS is ${OBJS})
 
 # 编译选项
-CFLAGS = -g -O2 -Wall -Werror -Wno-unused -ldl -fPIC
+CFLAGS = -g -O2 -Wall -Werror -Wno-unused -ldl -fPIC -std=c++11
 $(warning CFLAGS is ${CFLAGS})
 
 # 找出当前目录下所有的头文件
 INCLUDE_TEMP = $(shell find ./* -type d)
 INCLUDE = $(patsubst %,-I %, $(INCLUDE_TEMP))
 $(warning INCLUDE is ${INCLUDE})
-
-LDFLAG=-std=c++11
 
 SRC_MAIN = main.cpp
 OBJ_MAIN = ${SRC_MAIN:%.cpp=%.o}
@@ -27,7 +25,7 @@ EXE_MAIN = main
 target: ${EXE_MAIN}
 
 $(EXE_MAIN): $(OBJ_MAIN) $(OBJS)
-	$(CC) -o $@ $^ $(CFLAGS) $(INCLUDE) $(LDFLAG)
+	$(CC) -o $@ $^ $(CFLAGS) $(INCLUDE)
 
 clean:
 	rm -f ${OBJS} ${OBJ_MAIN} ${EXE_MAIN}
