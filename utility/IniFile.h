@@ -6,7 +6,8 @@
 using namespace std;
 
 
-namespace yazi::utility {
+namespace yazi {
+namespace utility {
 
 class Value
 {
@@ -72,4 +73,4 @@ private:
     std::map<string, Section> m_sections;
 };
 
-}
+}}
