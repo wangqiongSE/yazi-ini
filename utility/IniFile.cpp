@@ -37,38 +37,33 @@ Value::~Value()
 {
 }
 
-Value & Value::operator = (bool value)
+void Value::operator = (bool value)
 {
     m_value = value ? "true" : "false";
-    return *this;
 }
 
-Value & Value::operator = (int value)
+void Value::operator = (int value)
 {
     stringstream ss;
     ss << value;
     m_value = ss.str();
-    return *this;
 }
 
-Value & Value::operator = (double value)
+void Value::operator = (double value)
 {
     stringstream ss;
     ss << value;
     m_value = ss.str();
-    return *this;
 }
 
-Value & Value::operator = (const char * value)
+void Value::operator = (const char * value)
 {
     m_value = value;
-    return *this;
 }
 
-Value & Value::operator = (const string & value)
+void Value::operator = (const string & value)
 {
     m_value = value;
-    return *this;
 }
 
 Value::operator bool()

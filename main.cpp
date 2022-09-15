@@ -31,7 +31,7 @@ int main()
     ini.set("profile", "age", 32);
 
     age = ini["profile"]["age"];
-    std::cout << "int[\"profile\"[\"age\"] = " << age << std::endl;
+    std::cout << "int[\"profile\"][\"age\"] = " << age << std::endl;
 
     // if the server section is exist
     if (ini.has("server"))
