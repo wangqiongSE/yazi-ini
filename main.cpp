@@ -6,7 +6,7 @@ using namespace yazi::utility;
 
 int main()
 {
-    // load a ini file
+    // load ini file
     const string & filename = "./main.ini";
     IniFile ini(filename);
 
