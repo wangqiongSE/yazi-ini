@@ -3,6 +3,14 @@ a tiny c++ ini parser
 
 ## example
 
+main.ini
+```ini
+[server]
+ip = 127.0.0.1
+port = 80
+```
+
+main.cpp
 ```c++
 #include <iostream>
 using namespace std;
