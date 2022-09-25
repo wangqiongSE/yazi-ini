@@ -20,11 +20,12 @@ public:
     Value(const string & value);
     ~Value();
 
-    void operator = (bool value);
-    void operator = (int value);
-    void operator = (double value);
-    void operator = (const char * value);
-    void operator = (const string & value);
+    Value & operator = (bool value);
+    Value & operator = (int value);
+    Value & operator = (double value);
+    Value & operator = (const char * value);
+    Value & operator = (const string & value);
+    Value & operator = (const Value & value);
     
     operator bool();
     operator int();
