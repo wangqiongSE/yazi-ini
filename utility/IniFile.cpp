@@ -77,6 +77,16 @@ Value & Value::operator = (const Value & value)
     return *this;
 }
 
+bool Value::operator == (const Value & other)
+{
+    return m_value == other.m_value;
+}
+
+bool Value::operator != (const Value & other)
+{
+    return !(m_value == other.m_value);
+}
+
 Value::operator bool()
 {
     if (m_value == "true")

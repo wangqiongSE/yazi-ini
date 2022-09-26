@@ -26,6 +26,9 @@ public:
     Value & operator = (const char * value);
     Value & operator = (const string & value);
     Value & operator = (const Value & value);
+
+    bool operator == (const Value & other);
+    bool operator != (const Value & other);
     
     operator bool();
     operator int();
